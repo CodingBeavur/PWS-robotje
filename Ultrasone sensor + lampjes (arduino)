@@ -1,0 +1,44 @@
+const int trigPin = 9; // TRIG pin
+const int echoPin = 10; // ECHO pin
+const int redLed = 7;  // Rood lampje
+const int greenLed = 6; // Groen lampje
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(redLed, OUTPUT);
+  pinMode(greenLed, OUTPUT);
+
+  Serial.begin(9600); // Start seriële communicatie
+}
+
+void loop() {
+  // Stuur een 10-microseconde puls naar de TRIG pin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Lees de tijd dat de echo nodig heeft om terug te komen
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Bereken de afstand in cm
+  int distance = duration * 0.034 / 2;
+
+  // Print de afstand naar de seriële monitor
+  Serial.print("Afstand: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  // Controleer de afstand en zet de juiste lampjes aan
+  if (distance <= 25) {
+    digitalWrite(greenLed, HIGH); // Groen lampje aan
+    digitalWrite(redLed, LOW);   // Rood lampje uit
+  } else {
+    digitalWrite(greenLed, LOW); // Groen lampje uit
+    digitalWrite(redLed, HIGH);  // Rood lampje aan
+  }
+
+  delay(150); // Wacht 200 milliseconden voordat de meting opnieuw wordt gedaan
+}
